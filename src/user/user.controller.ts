@@ -82,4 +82,13 @@ export class UserController {
   remove(@Param('uid') uid: string) {
     return this.userService.deleteUser(uid);
   }
+
+  @ApiOperation({
+    summary: '查询单个用户信息,仅在用户登录成功使用',
+  })
+  @Get(':uid')
+  @UseGuards(LoginGuard)
+  findOne(@Param('uid') uid: string) {
+    return this.userService.findOne(uid);
+  }
 }

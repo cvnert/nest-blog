@@ -168,4 +168,29 @@ export class UserService {
       msg: '删除成功',
     };
   }
+  //查询单个用户
+  async findOne(uid: string) {
+    try {
+      const userInfo = await this.prisma.user.findFirst({
+        where: {
+          uid: uid,
+        },
+      });
+      if (!userInfo) {
+        return {
+          code: 400,
+          msg: '用户不存在',
+        };
+      }
+      delete userInfo.password;
+      delete userInfo.roleId;
+      return {
+        code: 200,
+        msg: '查询成功',
+        data: userInfo,
+      };
+    } catch (error) {
+      new Error(error);
+    }
+  }
 }
