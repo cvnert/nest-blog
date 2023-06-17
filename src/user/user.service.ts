@@ -75,7 +75,6 @@ export class UserService {
           uid,
         },
       });
-      console.log(res);
       delete res.password;
       delete res.roleId;
       return {
