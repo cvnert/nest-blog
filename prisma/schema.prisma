@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+//用户表
+model User {
+  id          Int       @id @unique @default(autoincrement())
+  email       String
+  username    String
+  password    String
+  nickname    String?
+  avatar      String?
+  phone       String?
+  uid         String    @unique @default(uuid())
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  articles    Article[]
+  //关注
+  following   Follow[]  @relation("Following")
+  followers   Follow[]  @relation("Followers")
+
+  //点赞
+  like    Like[]
+  //收藏
+  Collect Collect[]
+  //评论
+  Comment Comment[]
+  //角色
+  Role    Role?     @relation(fields: [roleId], references: [id])
+  roleId  Int       @default(3)
+}
+
+//角色表
+model Role {
+  id           Int         @id @unique @default(autoincrement())
+  name         String      @unique
+  description  String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  users        User[]
+  //权限
+  Permission   Permission? @relation(fields: [permissionId], references: [id])
+  permissionId Int?
+}
+
+//文章表
+model Article {
+  id          Int      @id @unique @default(autoincrement())
+  title       String
+  content     String
+  description String?
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  //点赞
+  like    Like[]
+  // 标签
+  tag     Tag       @relation("ArticleTag", fields: [tagId], references: [id])
+  tagId   Int
+  //收藏
+  Collect Collect[]
+  //评论
+  Comment Comment[]
+}
+
+//标签表
+model Tag {
+  id       Int       @id @unique @default(autoincrement())
+  name     String    @unique
+  articles Article[] @relation("ArticleTag")
+}
+
+// 关注表
+model Follow {
+  id          Int      @id @unique @default(autoincrement())
+  followingId Int
+  followerId  Int
+  createdAt   DateTime @default(now())
+
+  following User @relation("Following", fields: [followingId], references: [id])
+  follower  User @relation("Followers", fields: [followerId], references: [id])
+
+  @@index([followingId], name: "followingId")
+  @@index([followerId], name: "followerId")
+  @@map("user_follow")
+}
+
+//点赞表
+model Like {
+  id        Int      @id @unique @default(autoincrement())
+  article   Article  @relation(fields: [articleId], references: [id])
+  articleId Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+
+  @@index([articleId], name: "articleId")
+  @@index([userId], name: "userId")
+  @@map("article_like")
+}
+
+// 收藏表
+model Collect {
+  id        Int      @id @unique @default(autoincrement())
+  article   Article  @relation(fields: [articleId], references: [id])
+  articleId Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+
+  @@index([articleId], name: "articleId")
+  @@index([userId], name: "userId")
+  @@map("article_collect")
+}
+
+//评论表
+model Comment {
+  id        Int      @id @unique @default(autoincrement())
+  content   String
+  article   Article  @relation(fields: [articleId], references: [id])
+  articleId Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  partentId Int? //父评论id 有时则为子评论
+  createdAt DateTime @default(now())
+
+  @@index([articleId], name: "articleId")
+  @@index([userId], name: "userId")
+  @@map("article_comment")
+}
+
+//权限表
+model Permission {
+  id          Int      @id @unique @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  roles       Role[]
+}
