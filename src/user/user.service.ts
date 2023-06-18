@@ -184,10 +184,27 @@ export class UserService {
       }
       delete userInfo.password;
       delete userInfo.roleId;
+      //查询用户的关注数
+      const followCount = await this.prisma.follow.count({
+        where: {
+          followerId: userInfo.id,
+        },
+      });
+      //查询用户的粉丝数
+      const fansCount = await this.prisma.follow.count({
+        where: {
+          followingId: userInfo.id,
+        },
+      });
+
       return {
         code: 200,
         msg: '查询成功',
-        data: userInfo,
+        data: {
+          ...userInfo,
+          followCount,
+          fansCount,
+        },
       };
     } catch (error) {
       new Error(error);
