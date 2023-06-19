@@ -163,7 +163,7 @@ export class FollowService {
           followerId: userInfo.id,
         },
         include: {
-          following: true,
+          followed: true,
         },
       });
       //删除不需要的字段
@@ -174,14 +174,14 @@ export class FollowService {
         return item;
       });
       for (let i = 0; i < followList.length; i++) {
-        delete followList[i].following.id;
-        delete followList[i].following.uid;
-        delete followList[i].following.password;
-        delete followList[i].following.createdAt;
-        delete followList[i].following.roleId;
-        delete followList[i].following.phone;
-        delete followList[i].following.email;
-        delete followList[i].following.updatedAt;
+        delete followList[i].followed.id;
+        delete followList[i].followed.uid;
+        delete followList[i].followed.password;
+        delete followList[i].followed.createdAt;
+        delete followList[i].followed.roleId;
+        delete followList[i].followed.phone;
+        delete followList[i].followed.email;
+        delete followList[i].followed.updatedAt;
       }
 
       console.log(followList);

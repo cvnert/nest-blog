@@ -3,9 +3,9 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export enum Role {
-  User = '普通用户',
-  Admin = '管理员',
-  Vip = 'VIP用户',
+  User = 'User',
+  Admin = 'Admin',
+  Vip = 'Vip',
 }
 export default async function getRoles(): Promise<Role[]> {
   const roles = await prisma.role.findMany();

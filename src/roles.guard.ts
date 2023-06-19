@@ -31,6 +31,7 @@ export class RolesGuard implements CanActivate {
           uid: decoded,
         },
       });
+
       if (!user) {
         throw new ForbiddenException('Unauthorized access');
       }
@@ -39,6 +40,10 @@ export class RolesGuard implements CanActivate {
         where: {
           id: user.roleId,
         },
+      });
+      console.log(role);
+      roles.some((roles) => {
+        console.log(roles, role.name);
       });
       return roles.some((roles) => role.name === roles);
     } catch (error) {
