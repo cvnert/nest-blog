@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AllExceptionFilter } from './all-exception/all-exception.filter';
 import { AllResponseInterceptor } from './all-response/all-response.interceptor';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const config = new DocumentBuilder()
     .setTitle('接口')
     .setDescription('服务器端API接口')
@@ -17,7 +18,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new AllResponseInterceptor()); // 全局拦截器
   app.useGlobalFilters(new AllExceptionFilter()); // 全局异常过滤器
   app.enableCors({ origin: true, credentials: true }); // 允许跨域和传递cookie
-
+  app.useStaticAssets('./public');
   await app.listen(3000);
 }
 bootstrap();
