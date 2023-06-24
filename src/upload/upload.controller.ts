@@ -9,13 +9,15 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as multer from 'multer';
 import { UploadService } from './upload.service';
+import { LoginGuard } from 'src/guard/login.guard';
 
 if (!fs.existsSync('./public/uploads')) {
   fs.mkdirSync('./public/uploads');
@@ -37,9 +39,10 @@ const storage = multer.diskStorage({
 @ApiTags('文件上传')
 export class UploadController {
   constructor(private readonly ossService: UploadService) {}
-  @ApiProperty({
-    description: '上传文件(磁盘存储,建议使用)',
+  @ApiOperation({
+    summary: '上传文件(磁盘存储,建议使用)',
   })
+  @UseGuards(LoginGuard)
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -57,10 +60,11 @@ export class UploadController {
     }
   }
 
-  @ApiProperty({
-    description: '上传文件(oss存储,不建议使用,因为我要花钱QAQ)',
+  @ApiOperation({
+    summary: '上传文件(oss存储,不建议使用,因为我要花钱QAQ)',
   })
   @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(LoginGuard)
   @Post('uploadToOss')
   async uploadFileToOss(@UploadedFile() file) {
     console.log('-------------', file);

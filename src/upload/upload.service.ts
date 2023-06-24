@@ -13,7 +13,6 @@ export class UploadService {
     });
   }
   async uploadFile(file, filename: string) {
-    console.log('-------', file);
     const result = await this.client.put(filename, file.buffer);
 
     return result.url;
