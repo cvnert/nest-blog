@@ -196,14 +196,34 @@ export class UserService {
           followingId: userInfo.id,
         },
       });
+      //查询用户的收藏的文章列表
+      const collectArticleList = await this.prisma.collect.findMany({
+        where: {
+          userId: userInfo.id,
+        },
+        include: {
+          article: true,
+        },
+      });
+      //查询用户的点赞的文章列表
+      const likeArticleList = await this.prisma.like.findMany({
+        where: {
+          userId: userInfo.id,
+        },
+        include: {
+          article: true,
+        },
+      });
 
       return {
         code: 200,
         msg: '查询成功',
         data: {
           ...userInfo,
+          collectArticleList,
           followCount,
           fansCount,
+          likeArticleList,
         },
       };
     } catch (error) {

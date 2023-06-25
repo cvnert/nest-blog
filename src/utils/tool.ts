@@ -1,6 +1,7 @@
+import { PrismaClient } from '@prisma/client';
 import { createHash } from 'crypto';
-const JWT = require('jsonwebtoken');
-
+import * as jwt from 'jsonwebtoken';
+const prisma = new PrismaClient();
 const salt = 'cvnert'; // 拼接随机数防破解
 /**
  * 密码加密
@@ -17,11 +18,31 @@ export function encodePwd(pwd) {
  */
 export const sign = async (user) => {
   return new Promise((resolve, reject) => {
-    JWT.sign(user, salt, (error, token) => {
+    jwt.sign(user, salt, (error, token) => {
       if (error) {
         return reject(error);
       }
       resolve(token);
     });
+  });
+};
+/**
+ * 解密token返回用户信息
+ */
+
+export const getUserInfo = async (token) => {
+  const decoded = jwt.verify(token, 'cvnert') as any;
+  const user = await prisma.user.findUnique({
+    where: {
+      uid: decoded,
+    },
+  });
+
+  return new Promise((resolve, reject) => {
+    if (user) {
+      resolve(user);
+    } else {
+      reject('用户不存在');
+    }
   });
 };
