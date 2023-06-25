@@ -8,8 +8,10 @@ import {
   Headers,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiProduces, ApiTags } from '@nestjs/swagger';
+import { LoginGuard } from 'src/guard/login.guard';
 import { ArticleService } from './article.service';
 import { CreateArticleDto, QueryInfo } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -22,6 +24,7 @@ export class ArticleController {
   @ApiOperation({
     summary: '创建文章',
   })
+  @UseGuards(LoginGuard)
   create(@Body() createArticleDto: CreateArticleDto, @Headers() res: any) {
     console.log(res);
     const token = res.token;
@@ -48,6 +51,7 @@ export class ArticleController {
   @ApiOperation({
     summary: '修改文章',
   })
+  @UseGuards(LoginGuard)
   update(
     @Param('id') id: string,
     @Body() updateArticleDto: UpdateArticleDto,
@@ -61,6 +65,7 @@ export class ArticleController {
   @ApiOperation({
     summary: '删除文章',
   })
+  @UseGuards(LoginGuard)
   remove(@Param('id') id: string, @Headers() res: any) {
     const token = res.token;
     return this.articleService.remove(+id, token);

@@ -135,9 +135,43 @@ export class ArticleService {
               name: true,
             },
           },
-          like: true,
-          Comment: true,
-          Collect: true,
+          like: {
+            include: {
+              user: {
+                select: {
+                  username: true,
+                  avatar: true,
+                  email: true,
+                  description: true,
+                  phone: true,
+                },
+              },
+            },
+          },
+          Comment: {
+            include: {
+              user: {
+                select: {
+                  username: true,
+                  avatar: true,
+                  description: true,
+                },
+              },
+            },
+          },
+          Collect: {
+            include: {
+              user: {
+                select: {
+                  username: true,
+                  avatar: true,
+                  email: true,
+                  description: true,
+                  phone: true,
+                },
+              },
+            },
+          },
         },
       });
       //查询文章总数
@@ -176,8 +210,32 @@ export class ArticleService {
               },
             },
           },
-          Collect: true,
-          like: true,
+          Collect: {
+            include: {
+              user: {
+                select: {
+                  username: true,
+                  avatar: true,
+                  email: true,
+                  description: true,
+                  phone: true,
+                },
+              },
+            },
+          },
+          like: {
+            include: {
+              user: {
+                select: {
+                  username: true,
+                  avatar: true,
+                  email: true,
+                  description: true,
+                  phone: true,
+                },
+              },
+            },
+          },
         },
       });
       //查询文章是否存在

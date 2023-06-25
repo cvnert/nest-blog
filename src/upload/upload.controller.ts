@@ -36,6 +36,7 @@ const storage = multer.diskStorage({
 });
 
 @Controller('upload')
+@UseGuards(LoginGuard)
 @ApiTags('文件上传')
 export class UploadController {
   constructor(private readonly ossService: UploadService) {}

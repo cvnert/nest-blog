@@ -7,8 +7,10 @@ import {
   Param,
   Delete,
   Headers,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { LoginGuard } from 'src/guard/login.guard';
 import { CollectService } from './collect.service';
 import { CreateCollectDto } from './dto/create-collect.dto';
 import { UpdateCollectDto } from './dto/update-collect.dto';
@@ -19,6 +21,7 @@ export class CollectController {
   constructor(private readonly collectService: CollectService) {}
 
   @Post()
+  @UseGuards(LoginGuard)
   @ApiOperation({
     summary: '收藏文章',
   })
@@ -31,6 +34,7 @@ export class CollectController {
   @ApiOperation({
     summary: '取消收藏',
   })
+  @UseGuards(LoginGuard)
   remove(@Param('id') id: string, @Headers() res: any) {
     const token = res.token;
     return this.collectService.remove(+id, token);

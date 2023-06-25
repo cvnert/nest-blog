@@ -8,14 +8,17 @@ import {
   Delete,
   Headers,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { LikeService } from './like.service';
 import { CreateLikeDto, QueryInfo } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { LoginGuard } from 'src/guard/login.guard';
 
 @Controller('like')
 @ApiTags('点赞')
+@UseGuards(LoginGuard)
 export class LikeController {
   constructor(private readonly likeService: LikeService) {}
   @Post()
@@ -28,6 +31,7 @@ export class LikeController {
   }
 
   @Delete(':id')
+  @UseGuards(LoginGuard)
   @ApiOperation({
     summary: '取消点赞',
   })
