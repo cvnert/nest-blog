@@ -19,6 +19,6 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionFilter()); // 全局异常过滤器
   app.enableCors({ origin: true, credentials: true }); // 允许跨域和传递cookie
   app.useStaticAssets('./public');
-  await app.listen(3000);
+  await app.listen(3333);
 }
 bootstrap();
