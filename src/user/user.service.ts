@@ -24,12 +24,20 @@ export class UserService {
           username: user.username,
         },
       });
-      console.log(res);
+      if (!res) {
+        return {
+          code: 400,
+          msg: '账号不存在',
+        };
+      }
       if (res.password === encodePwd(user.password)) {
         return {
           code: 200,
           msg: '登录成功',
-          data: await sign(res.uid),
+          data: {
+            uid: res.uid,
+            token: await sign(res.uid),
+          },
         };
       } else {
         return {
