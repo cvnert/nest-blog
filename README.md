@@ -16,15 +16,18 @@
 
 ### 使用方法
 
-#### 1.安装依赖
+#### 1.安装依赖及其他配置
 
 ```
-npm install
+pnpm install
+npx prisma migrate dev --name init
+npx prisma generate
 ```
 
 #### 2.启动项目
 
 ```
+启动之前先把.env的数据库配置更改一下
 npm run start
 ```
 
