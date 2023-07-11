@@ -112,8 +112,8 @@ export class UserService {
     }
     const userInfo = await this.prisma.user.findMany({
       where,
-      skip: (page - 1) * per,
-      take: parseInt(per as unknown as string),
+      skip: (page - 1) * per || 0,
+      take: parseInt(per as unknown as string) || 10,
     });
     userInfo.map((item) => {
       delete item.password;
