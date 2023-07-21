@@ -60,17 +60,4 @@ export class UploadController {
       return '/uploads/' + files?.filename;
     }
   }
-
-  @ApiOperation({
-    summary: '上传文件(oss存储,不建议使用,因为我要花钱QAQ)',
-  })
-  @UseInterceptors(FileInterceptor('file'))
-  @UseGuards(LoginGuard)
-  @Post('uploadToOss')
-  async uploadFileToOss(@UploadedFile() file) {
-    console.log('-------------', file);
-    const result = await this.ossService.uploadFile(file, file.originalname);
-
-    return { url: result };
-  }
 }
