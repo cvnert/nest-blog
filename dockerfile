@@ -1,21 +1,28 @@
-FROM node:18.0-alpine3.14 as build-stage
-# Create app directory
+# build stage
+FROM node:18 as build-stage
+
 WORKDIR /app
 
-RUN npm config set registry https://registry.npm.taobao.org
+COPY package.json .
+
+RUN npm config set registry https://registry.npmmirror.com/
+
+RUN npm install
 
 COPY . .
 
-RUN npm install 
+RUN npm run build
 
-RUN npx prisma init
+# production stage
+FROM node:18 as production-stage
 
-RUN npx prisma migrate dev --name init
+COPY --from=build-stage /app/dist /app
+COPY --from=build-stage /app/package.json /app/package.json
 
-RUN npx prisma generate
+WORKDIR /app
 
-RUN npx prisma db seed 
+RUN npm install --production
 
-EXPOSE 8888
+EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD ["node", "/app/main.js"]
